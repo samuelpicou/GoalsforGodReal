@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ campus.name }} Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background: #f8fafc; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn-launch { background: #059669; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .task-list { margin-top: 20px; border-top: 1px solid #e2e8f0; }
+        .task-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .team-tag { background: #dbeafe; color: #1e40af; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>{{ campus.name }}</h1>
+            <p style="color: #64748b;">Goal: Launch 144 DG Leaders</p>
+            <div style="font-size: 3.5rem; font-weight: 900; color: #059669; margin: 10px 0;">{{ campus.current }}</div>
+            <form action="/increment_campus/{{ campus.id }}" method="POST">
+                <button type="submit" class="btn-launch">🚀 Launch Next Leader</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Active Team Steps</h3>
+            <div class="task-list">
+                {% for goal in campus.goals %}
+                    {% for step in goal.steps %}
+                    <div class="task-item">
+                        <input type="checkbox" {% if step.is_completed %}checked{% endif %}>
+                        <span style="margin-left: 10px;">{{ step.description }}</span>
+                        <span class="team-tag">{{ step.assigned_team }}</span>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="card">
+    <h1>{{ goal.title }}</h1>
+    <div class="verse-box">{{ goal.bible_verse }}</div>
+
+    {% set total = goal.tasks|length %}
+    {% set completed = goal.tasks|selectattr('is_completed', 'equalto', True)|list|length %}
+    {% set percent = (completed / total * 100)|round|int if total > 0 else 0 %}
+
+    <div class="progress-ring-wrapper">
+        <svg width="120" height="120">
+            <circle stroke="#e2e8f0" stroke-width="8" fill="transparent" r="52" cx="60" cy="60" />
+            <circle stroke="#3b82f6" stroke-width="8" stroke-dasharray="326.72" 
+                    stroke-dashoffset="{{ 326.72 - (percent / 100 * 326.72) }}" 
+                    fill="transparent" r="52" cx="60" cy="60" style="transition: 0.5s; transform: rotate(-90deg); transform-origin: 50% 50%;" />
+        </svg>
+        <div class="goal-percent">{{ percent }}%</div>
+    </div>
+
+    <h4>To-Do List (Checking these off fills the circle):</h4>
+    {% for task in goal.tasks %}
+    <form action="/toggle_task/personal/{{ task.id }}" method="POST" class="step-item">
+        <input type="checkbox" onchange="this.form.submit()" {% if task.is_completed %}checked{% endif %}>
+        <span style="margin-left:10px; {% if task.is_completed %}text-decoration: line-through; color: gray;{% endif %}">
+            {{ task.description }}
+        </span>
+    </form>
+    {% endfor %}
+
+    <form action="/add_task/personal/{{ goal.id }}" method="POST" style="margin-top:15px; display:flex;">
+        <input type="text" name="task" placeholder="Add a task to hit your goal..." required>
+        <button type="submit" class="btn" style="width:auto; margin-left:5px;">+</button>
+    </form>
+</div>
